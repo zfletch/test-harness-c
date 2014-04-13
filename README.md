@@ -8,6 +8,11 @@ When I looked for C unit testing frameworks, the frameworks that I found
 looked excellent but were all much more complicated than what I needed.
 
 I wrote this test harness to provide a very simple unit test framework.
+
+
+Unit Test Functions
+--------------
+
 It's based on four functions that can be used in unit testing functions:
 
 - void affirm(TestResult* result, bool valid, const char* fail\_text):
@@ -18,6 +23,10 @@ It's based on four functions that can be used in unit testing functions:
 	if the test fails then the test uses fail\_text in the output
 - void report(TestResult* result, const char* str, ...):
 	if verbose is set then string passed in is printed
+
+
+Test Harness Functions
+--------------
 
 The unit testing functions are then used by the test harness functions.
 The following three harness functions use function pointers to
@@ -33,6 +42,10 @@ the unit test functions to run the unit tests and print the output:
 	basically the same as doTest except it also takes in a TestHarness, which
 	allows the same test to be run multiple times in a loop with a different
 	seed
+
+
+Levels of Verbosity
+--------------
 
 Finally there are four levels of Verbosity that can be passed into doTest
 and runTestHarness:
