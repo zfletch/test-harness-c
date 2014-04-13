@@ -37,7 +37,8 @@ void test_rand(TestResult* result, int seed)
 int main (int argc, char** argv)
 {
 	printf("This test runs the same set of tests in a loop with different seeds\n");
-	printf("The code fails rarely, hopefully this task will fail\n");
+	printf("The code it's testing fails sometimes, but only rarely\n");
+	printf("This unit test should run enough times that there is at least one failure\n");
 	printf("\n");
 	TestHarness* harness = (TestHarness*) malloc(sizeof(TestHarness));
 	createTestHarness(harness,

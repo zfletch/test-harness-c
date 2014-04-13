@@ -12,8 +12,9 @@ void test_add (TestResult* result, int seed)
 
 int main (int argc, char** argv)
 {
-	printf("This should pass as long as integer addition is working\n");
+	printf("This test should pass as long as integer addition is working\n");
 	printf("\n");
+
 	doTest("Simple Test",
 			(TestFunc[]) { { test_add, NULL } },
 			1,
