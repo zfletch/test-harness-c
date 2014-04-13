@@ -36,7 +36,11 @@ void test_rand(TestResult* result, int seed)
 
 int main (int argc, char** argv)
 {
+	printf("This test runs the same test with several levels of verbosity\n");
+	printf("The code works most of the time but not all the time, so depending on the seed it can fail or succeed\n");
+	printf("\n");
 	TestHarness* harness = (TestHarness*) malloc(sizeof(TestHarness));
+
 	createTestHarness(harness,
 			"test mult and rand",
 			(TestFunc[]) {

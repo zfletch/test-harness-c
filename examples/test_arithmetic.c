@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "../src/harness.h"
 
-void test_Add (TestResult* result, int seed)
+void test_add (TestResult* result, int seed)
 {
 	report(result, "Add 1 to seed");
 
@@ -12,8 +12,10 @@ void test_Add (TestResult* result, int seed)
 
 int main (int argc, char** argv)
 {
+	printf("This should pass as long as integer addition is working\n");
+	printf("\n");
 	doTest("Simple Test",
-			(TestFunc[]) { { test_Add, NULL } },
+			(TestFunc[]) { { test_add, NULL } },
 			1,
 			0,
 			ALL_INFO);
