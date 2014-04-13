@@ -42,6 +42,10 @@ bool runTestHarness(TestHarness* harness, int seed, Verbosity verbose)
 		printf("[start] \"%s\" with seed %d\n", harness->name, seed);
 	}
 
+	// since fork() is called, stdout has to be unbuffered or redirecting output
+	// will print the same line multiple times
+	setbuf(stdout, NULL);
+
 	// fork is an expensive call, but it's the easiest and safest way to guarantee
 	// that test harness runs do not interfere with each other's memory
 	// the child runs the test and the parent waits for it to exit before continuing
