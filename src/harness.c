@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include "./harness.h"
 
 static const size_t max_string_size = 256;
@@ -112,10 +113,15 @@ bool doTest(char* name,
 }
 
 
-void report(TestResult* result, const char* str)
+void report(TestResult* result, const char* str, ...)
 {
 	if (result->verbose == ALL_INFO) {
-		printf("    [report] %s\n", str);
+		va_list args;
+		va_start(args, str);
+		printf("    [report] ");
+		vprintf(str, args);
+		printf("\n");
+		va_end(args);
 	}
 }
 

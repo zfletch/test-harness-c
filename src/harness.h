@@ -54,10 +54,7 @@ bool runTestHarness(TestHarness* harness, int seed, Verbosity verbose);
 // utility functions
 
 // print the string if the verbosity is ALL_INFO
-void report(TestResult* result, const char* str);
-
-// call to initialize test name
-void begin(TestResult* result, const char* name);
+void report(TestResult* result, const char* str, ...);
 
 // assert, need to use a different name because assert exists in <assert.h>
 void affirm(TestResult* result, bool valid, const char* fail_text);

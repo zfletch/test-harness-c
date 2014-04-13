@@ -45,21 +45,19 @@ int main (int argc, char** argv)
 			},
 			2);
 
-	printf("Test verbosity ALL_INFO\n");
-	runTestHarness(harness, 10, ALL_INFO);
-	printf("\n");
+	bool valid = true;
+	int ii;
 
-	printf("Test verbosity BASIC_INFO\n");
-	runTestHarness(harness, 10, BASIC_INFO);
-	printf("\n");
+	for (ii = 0; ii < 100000; ii += 1) {
+		bool test_result = runTestHarness(harness, ii, NO_INFO);
+		valid = valid && test_result;
+	}
 
-	printf("Test verbosity MINIMAL_INFO\n");
-	runTestHarness(harness, 10, MINIMAL_INFO);
-	printf("\n");
-
-	printf("Test verbosity NO_INFO\n");
-	runTestHarness(harness, 10, NO_INFO);
-
+	if (valid) {
+		printf("All tests passed!\n");
+	} else {
+		printf("Tests FAILED!\n");
+	}
 	free(harness);
 
 	return 0;
