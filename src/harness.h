@@ -32,6 +32,8 @@ typedef struct TestHarness {
 	size_t test_funcs_length;
 } TestHarness;
 
+// runs the test and returns true if it passed and false if it failed
+// depending on the Verbosity of verbose, prints information about the test
 bool doTest(
 		char* name,
 		TestFunc* test_funcs,
@@ -59,10 +61,10 @@ void report(TestResult* result, const char* str, ...);
 // assert, need to use a different name because assert exists in <assert.h>
 void affirm(TestResult* result, bool valid, const char* fail_text);
 
-// if there are no erros, write success_text to the result
+// if there are no errors, write success_text to the result
 void onSuccess(TestResult* result, const char* success_text);
 
-// if there are erros, write fail_text to the result
+// if there are errors, write fail_text to the result
 void onFailure(TestResult* result, const char* fail_text);
 
 #endif // HARNESS_H
