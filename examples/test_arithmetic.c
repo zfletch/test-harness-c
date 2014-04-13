@@ -20,4 +20,5 @@ int main (int argc, char** argv)
 			1,
 			0,
 			ALL_INFO);
+	return 0;
 }
