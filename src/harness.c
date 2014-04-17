@@ -14,9 +14,6 @@ static const size_t max_string_size = 256;
 // initializes the fields in result to their default values
 static void initTestResult(TestResult* result, Verbosity verbose, const char* name);
 
-// prints the error passed in and exits
-static void handleChildSignal (int signum);
-
 // fills out the TestHarness passed in partially, to be passed to runTestHarness
 void createTestHarness(
 		TestHarness* harness,
@@ -58,20 +55,6 @@ bool runTestHarness(TestHarness* harness, int seed, Verbosity verbose)
 	}
 
 	if (pid == 0) {
-		if (verbose == BASIC_INFO || verbose == MINIMAL_INFO || verbose == ALL_INFO) {
-			// this is probably the hackiest part of the program
-			// in the case where the test dies but the exit status is EXIT_FAILURE,
-			// then we do not want the user to think the test completed but failed
-			// so in the case of EXIT_FAILURE occurring during the test,
-			// the [DIED] message is printed by the child before it exits
-			struct sigaction sa;
-			sigemptyset(&sa.sa_mask);
-			sa.sa_handler = handleChildSignal;
-			if (sigaction(EXIT_FAILURE, &sa, NULL) == -1) {
-				perror("sigaction");
-				exit(SIGINT);
-			}
-		}
 
 		name_string = (char*) malloc(max_string_size * sizeof(char));
 
@@ -130,26 +113,39 @@ bool runTestHarness(TestHarness* harness, int seed, Verbosity verbose)
 	} else {
 
 		int status;
-		pid_t wait_err = waitpid(pid, &status, WUNTRACED | WCONTINUED);
+		// wait until child has terminated
+		pid_t wait_err = waitpid(pid, &status, 0);
 		if (wait_err == -1) {
 			perror("waitpid");
 			exit(EXIT_FAILURE);
 		}
 
-		// if the user types ^C during a test, we should exit the test harness as well
-		if (status == SIGINT) {
-			exit(SIGINT);
+		if (WIFEXITED(status)) { // if child returned normally
+			if (WEXITSTATUS(status) == EXIT_SUCCESS) {
+				valid = true;
+			} else {
+				valid = false;
+			}
+		} else if (WIFSIGNALED(status)) { // if child was killed by a signal
+			valid = false;
+
+			// if the user types ^C during a test, we should exit the test harness as well
+			if (WTERMSIG(status) == SIGINT) {
+				exit(SIGINT);
+			}
+
+			if (verbose == BASIC_INFO || verbose == MINIMAL_INFO || verbose == ALL_INFO) {
+				printf("[DIED] Exit status: %d\n", WTERMSIG(status));
+			}
+		} else {
+			printf("[ERROR] Test process with pid %ld did not die correctly\n", (long int) pid);
+			exit(EXIT_FAILURE);
 		}
 
 		if (status != EXIT_SUCCESS) {
-			valid = false;
 		}
 
 		if (verbose == BASIC_INFO || verbose == MINIMAL_INFO || verbose == ALL_INFO) {
-
-			if (status != EXIT_SUCCESS && status != EXIT_FAILURE) {
-				printf("[DIED] Exit status: %d\n", status);
-			}
 
 			if (valid) {
 				printf("[success] \"%s\" with seed %d\n", harness->name, seed);
@@ -240,10 +236,4 @@ static void initTestResult(TestResult* result, Verbosity verbose, const char* na
 	result->success_text = NULL;
 	result->name = name;
 	result->verbose = verbose;
-}
-
-static void handleChildSignal (int status)
-{
-	printf("[DIED] Exit status: %d\n", status);
-	exit(EXIT_FAILURE);
 }
