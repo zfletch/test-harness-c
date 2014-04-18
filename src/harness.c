@@ -142,9 +142,6 @@ bool runTestHarness(TestHarness* harness, int seed, Verbosity verbose)
 			exit(EXIT_FAILURE);
 		}
 
-		if (status != EXIT_SUCCESS) {
-		}
-
 		if (verbose == BASIC_INFO || verbose == MINIMAL_INFO || verbose == ALL_INFO) {
 
 			if (valid) {
